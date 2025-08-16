@@ -1,4 +1,9 @@
-const { SlashCommandBuilder, ModalBuilder } = require("discord.js");
+const {
+  SlashCommandBuilder,
+  UserSelectMenuBuilder,
+  ActionRowBuilder,
+  ComponentType,
+} = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -12,10 +17,42 @@ module.exports = {
       });
     }
 
-    const modal = new ModalBuilder()
-      .setCustomId("config_modal")
-      .setTitle("Configure Bot");
+    const menu = new UserSelectMenuBuilder()
+      .setCustomId("selectusers")
+      .setPlaceholder("Select users")
+      .setMinValues(1)
+      .setMaxValues(10);
 
-    await interaction.reply("Configuring...");
+    const row = new ActionRowBuilder().addComponents(menu);
+    await interaction.reply({
+      content: "Select Users Below",
+      components: [row],
+      ephemeral: true,
+    });
+
+    const msg = await interaction.fetchReply();
+    const collector = msg.createMessageComponentCollector({
+      componentType: ComponentType.USER_SELECT,
+      time: 60000,
+    });
+
+    collector.on("collect", async (interaction) => {
+      const selectedUsers = interaction.values.map((id) =>
+        interaction.client.users.cache.get(id),
+      );
+      await interaction.update({
+        content: `Selected Users: ${selectedUsers.map((user) => user.tag).join(", ")}`,
+        components: [],
+      });
+    });
+
+    collector.on("end", async (collected) => {
+      if (collected.size === 0) {
+        await interaction.editReply({
+          content: "No users selected",
+          components: [],
+        });
+      }
+    });
   },
 };
