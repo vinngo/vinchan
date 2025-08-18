@@ -5,6 +5,14 @@ require("dotenv").config();
 
 const token = process.env.DISCORD_TOKEN;
 
+let clock = 0;
+
+const gifs = [
+  "https://tenor.com/view/baka-anime-gif-22001672",
+  "https://tenor.com/view/anime-girl-shy-hearts-cover-face-gif-17478014",
+  "https://tenor.com/view/angry-gif-6367919497800974711",
+];
+
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -40,32 +48,17 @@ for (const folder of commandFolders) {
   }
 }
 
-// Handle slash command interactions
-client.on(Events.InteractionCreate, async (interaction) => {
-  if (!interaction.isChatInputCommand()) return;
+// Handle every 5th message
+client.on(Events.MessageCreate, async (message) => {
+  if (message.author.bot) return;
 
-  const command = interaction.client.commands.get(interaction.commandName);
-
-  if (!command) {
-    console.error(`No command matching ${interaction.commandName} was found.`);
-    return;
-  }
-
-  try {
-    await command.execute(interaction);
-  } catch (error) {
-    console.error(error);
-    if (interaction.replied || interaction.deferred) {
-      await interaction.followUp({
-        content: "There was an error while executing this command!",
-        ephemeral: true,
-      });
-    } else {
-      await interaction.reply({
-        content: "There was an error while executing this command!",
-        ephemeral: true,
-      });
-    }
+  if (clock == 0) {
+    //chose random gif from gifs
+    const randomIndex = Math.floor(Math.random() * gifs.length);
+    await message.reply(gifs[randomIndex]);
+    clock = 5;
+  } else {
+    clock--;
   }
 });
 
