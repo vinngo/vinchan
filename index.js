@@ -1,6 +1,13 @@
-const { Client, Events, GatewayIntentBits, Collection } = require("discord.js");
+const {
+  Client,
+  Events,
+  GatewayIntentBits,
+  Collection,
+  MessageFlags,
+} = require("discord.js");
 const fs = require("node:fs");
 const path = require("node:path");
+const { db } = require("./firebase");
 require("dotenv").config();
 
 const token = process.env.DISCORD_TOKEN;
@@ -51,6 +58,39 @@ for (const folder of commandFolders) {
 // Handle every 5th message
 
 client.on(Events.InteractionCreate, async (interaction) => {
+  if (interaction.isModalSubmit()) {
+    const modalId = interaction.customId;
+
+    if (modalId === "config") {
+      //save to firebase
+      console.log("saving to firebase...");
+      try {
+        const serverId = interaction.guildId;
+        const command = interaction.fields.getTextInputValue("command");
+        const channel = interaction.fields.getTextInputValue("channel");
+
+        const config = {
+          command: command,
+          channel: channel,
+        };
+
+        await db.collection("configs").doc(serverId).set(config);
+
+        await interaction.reply({
+          content: "Config saved!",
+          flags: MessageFlags.Ephemeral,
+        });
+      } catch (e) {
+        console.error(`Error saving config: ${e}`);
+        await interaction.reply({
+          content: "Error saving config!",
+          flags: MessageFlags.Ephemeral,
+        });
+      }
+      return;
+    }
+  }
+
   const command = interaction.client.commands.get(interaction.commandName);
 
   if (!command) {
@@ -62,17 +102,6 @@ client.on(Events.InteractionCreate, async (interaction) => {
     await command.execute(interaction);
   } catch (error) {
     console.error(error);
-    if (interaction.replied || interaction.deferred) {
-      await interaction.followUp({
-        content: "There was an error while executing this command!",
-        flags: MessageFlags.Ephemeral,
-      });
-    } else {
-      await interaction.reply({
-        content: "There was an error while executing this command!",
-        flags: MessageFlags.Ephemeral,
-      });
-    }
   }
 });
 
