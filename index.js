@@ -8,6 +8,7 @@ const {
 const fs = require("node:fs");
 const path = require("node:path");
 const { db } = require("./firebase");
+const { playAnimeOpening } = require("./lib/helpers/musicHelper");
 require("dotenv").config();
 
 const token = process.env.DISCORD_TOKEN;
@@ -55,7 +56,20 @@ for (const folder of commandFolders) {
   }
 }
 
-// Handle every 5th message
+setInterval(async () => {
+  const servers = client.guilds.cache;
+
+  for (const [guildId, guild] of servers) {
+    const config = db.collection("configs").doc(guildId);
+    doc = await config.get();
+
+    if (!doc.exists) continue;
+
+    if (Math.random() < 0.3) {
+      playAnimeOpening(db, guild, config);
+    }
+  }
+}, 3600000);
 
 client.on(Events.InteractionCreate, async (interaction) => {
   if (interaction.isModalSubmit()) {
@@ -112,7 +126,7 @@ client.on(Events.MessageCreate, async (message) => {
     //chose random gif from gifs
     const randomIndex = Math.floor(Math.random() * gifs.length);
     await message.reply(gifs[randomIndex]);
-    clock = 5;
+    clock = 10;
   } else {
     clock--;
   }

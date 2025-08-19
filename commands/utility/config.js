@@ -12,7 +12,7 @@ module.exports = {
     .setName("config")
     .setDescription("configure me! (only works if u are vincent-sama)"),
   async execute(interaction) {
-    if (interaction.user.id != process.env.VIN_USER_ID) {
+    if (interaction.user.id !== process.env.VIN_USER_ID) {
       await interaction.reply({
         content: "access denied! (u are not vincent-sama)",
         flags: MessageFlags.Ephemeral,
@@ -30,7 +30,7 @@ module.exports = {
 
     const channelInput = new TextInputBuilder()
       .setCustomId("channel")
-      .setLabel("Music Bot Channel (#bot, #spam, etc.)")
+      .setLabel("Music Bot Channel (bot, spam, etc.)")
       .setStyle(TextInputStyle.Short);
 
     const commandRow = new ActionRowBuilder().addComponents(commandInput);
