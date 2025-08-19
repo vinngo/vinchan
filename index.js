@@ -9,18 +9,12 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { db } = require("./firebase");
 const { playAnimeOpening } = require("./lib/helpers/musicHelper");
+const gifsData = require("./lib/gifs.json");
 require("dotenv").config();
 
 const token = process.env.DISCORD_TOKEN;
 
 let clock = 0;
-
-const gifs = [
-  "https://tenor.com/view/baka-anime-gif-22001672",
-  "https://tenor.com/view/anime-girl-shy-hearts-cover-face-gif-17478014",
-  "https://tenor.com/view/angry-gif-6367919497800974711",
-  "https://tenor.com/view/uta-idol-precure-anime-girl-cute-anime-girl-roll-anime-girl-bed-gif-17426425330535856610",
-];
 
 const client = new Client({
   intents: [
@@ -129,8 +123,8 @@ client.on(Events.MessageCreate, async (message) => {
 
   if (clock == 0) {
     //chose random gif from gifs
-    const randomIndex = Math.floor(Math.random() * gifs.length);
-    await message.reply(gifs[randomIndex]);
+    const randomIndex = Math.floor(Math.random() * gifsData.general.length);
+    await message.reply(gifsData.general[randomIndex]);
     clock = 3;
   } else {
     clock--;

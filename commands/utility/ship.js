@@ -1,10 +1,5 @@
 const { SlashCommandBuilder } = require("discord.js");
-
-gifs = [
-  "https://tenor.com/view/kiss-gif-26359550",
-  "https://tenor.com/view/hayase-nagatoro-hachioji-naoto-nagatoro-senpai-naoto-x-nagatoro-gif-21711726",
-  "https://tenor.com/view/sad-angry-cry-upset-anime-gif-24905129",
-];
+const gifsData = require("../../lib/gifs.json");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -31,13 +26,13 @@ module.exports = {
     let followUpGif = "";
     if (compatability > 75) {
       subtitle = "✨ The sacred bonds of destiny sparkle in the stars✨";
-      followUpGif = gifs[0];
+      followUpGif = gifsData.ship[0];
     } else if (compatability > 30) {
       subtitle = "🤔 These two could work, but only in a filler arc...";
-      followUpGif = gifs[1];
+      followUpGif = gifsData.ship[1];
     } else {
       subtitle = "💀 This ship sank faster than the Titanic. RIP. ";
-      followUpGif = gifs[2];
+      followUpGif = gifsData.ship[2];
     }
 
     const message = `${subtitle}
