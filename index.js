@@ -19,6 +19,7 @@ const gifs = [
   "https://tenor.com/view/baka-anime-gif-22001672",
   "https://tenor.com/view/anime-girl-shy-hearts-cover-face-gif-17478014",
   "https://tenor.com/view/angry-gif-6367919497800974711",
+  "https://tenor.com/view/uta-idol-precure-anime-girl-cute-anime-girl-roll-anime-girl-bed-gif-17426425330535856610",
 ];
 
 const client = new Client({
@@ -26,6 +27,7 @@ const client = new Client({
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildVoiceStates,
   ],
 });
 
@@ -56,20 +58,23 @@ for (const folder of commandFolders) {
   }
 }
 
-setInterval(async () => {
-  const servers = client.guilds.cache;
+setInterval(
+  async () => {
+    const servers = client.guilds.cache;
 
-  for (const [guildId, guild] of servers) {
-    const config = db.collection("configs").doc(guildId);
-    doc = await config.get();
+    for (const [guildId, guild] of servers) {
+      const config = db.collection("configs").doc(guildId);
+      doc = await config.get();
 
-    if (!doc.exists) continue;
+      if (!doc.exists) continue;
 
-    if (Math.random() < 0.3) {
-      playAnimeOpening(db, guild, config);
+      if (Math.random() < 0.5) {
+        playAnimeOpening(guild, doc.data());
+      }
     }
-  }
-}, 3600000);
+  },
+  60 * 60 * 1000,
+);
 
 client.on(Events.InteractionCreate, async (interaction) => {
   if (interaction.isModalSubmit()) {
@@ -126,7 +131,7 @@ client.on(Events.MessageCreate, async (message) => {
     //chose random gif from gifs
     const randomIndex = Math.floor(Math.random() * gifs.length);
     await message.reply(gifs[randomIndex]);
-    clock = 10;
+    clock = 3;
   } else {
     clock--;
   }

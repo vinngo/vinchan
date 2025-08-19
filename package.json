@@ -10,8 +10,11 @@
   "license": "ISC",
   "dependencies": {
     "@discordjs/voice": "^0.19.0",
+    "@snazzah/davey": "^0.1.6",
     "discord.js": "^14.21.0",
     "dotenv": "^17.2.1",
-    "firebase-admin": "^13.4.0"
+    "ffmpeg-static": "^5.2.0",
+    "firebase-admin": "^13.4.0",
+    "ytdl-core": "npm:@distube/ytdl-core@^4.16.12"
   }
 }

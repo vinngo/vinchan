@@ -32,7 +32,7 @@ module.exports = {
     if (compatability > 75) {
       subtitle = "✨ The sacred bonds of destiny sparkle in the stars✨";
       followUpGif = gifs[0];
-    } else if (compatability > 50) {
+    } else if (compatability > 30) {
       subtitle = "🤔 These two could work, but only in a filler arc...";
       followUpGif = gifs[1];
     } else {
