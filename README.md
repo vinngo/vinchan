@@ -1,5 +1,7 @@
 ## vinch
 
+run `npm install` to host it yourself.
+
 a simple discord bot that annoys your friends on configured events.
 
 may send random gifs, or play cringe songs in the most populated vc.
