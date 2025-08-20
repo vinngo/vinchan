@@ -52,23 +52,20 @@ for (const folder of commandFolders) {
   }
 }
 
-setInterval(
-  async () => {
-    const servers = client.guilds.cache;
+setInterval(async () => {
+  const servers = client.guilds.cache;
 
-    for (const [guildId, guild] of servers) {
-      const config = db.collection("configs").doc(guildId);
-      doc = await config.get();
+  for (const [guildId, guild] of servers) {
+    const config = db.collection("configs").doc(guildId);
+    doc = await config.get();
 
-      if (!doc.exists) continue;
+    if (!doc.exists) continue;
 
-      if (Math.random() < 0.5) {
-        playAnimeOpening(guild, doc.data());
-      }
+    if (Math.random() < 0.5) {
+      playAnimeOpening(guild, doc.data());
     }
-  },
-  60 * 60 * 1000,
-);
+  }
+}, 60 * 1000);
 
 client.on(Events.InteractionCreate, async (interaction) => {
   if (interaction.isModalSubmit()) {
