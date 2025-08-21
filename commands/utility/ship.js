@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require("discord.js");
-const gifsData = require("../../lib/gifs.json");
+const gifsData = require("../../gifs.json");
 
 module.exports = {
   data: new SlashCommandBuilder()

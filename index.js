@@ -9,7 +9,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { db } = require("./firebase");
 const { playAnimeOpening } = require("./lib/helpers/musicHelper");
-const gifsData = require("./lib/gifs.json");
+const gifsData = require("./gifs.json");
 require("dotenv").config();
 
 const token = process.env.DISCORD_TOKEN;
@@ -52,20 +52,25 @@ for (const folder of commandFolders) {
   }
 }
 
-setInterval(async () => {
-  const servers = client.guilds.cache;
+setInterval(
+  async () => {
+    const servers = client.guilds.cache;
 
-  for (const [guildId, guild] of servers) {
-    const config = db.collection("configs").doc(guildId);
-    doc = await config.get();
+    for (const [guildId, guild] of servers) {
+      const config = db.collection("configs").doc(guildId);
+      doc = await config.get();
 
-    if (!doc.exists) continue;
+      if (!doc.exists) continue;
 
-    if (Math.random() < 0.5) {
-      playAnimeOpening(guild, doc.data());
+      try {
+        await playAnimeOpening(guild, doc.data());
+      } catch (e) {
+        console.error(`Error playing anime opening for guild ${guildId}:`, e);
+      }
     }
-  }
-}, 60 * 1000);
+  },
+  60 * 60 * 1000,
+);
 
 client.on(Events.InteractionCreate, async (interaction) => {
   if (interaction.isModalSubmit()) {
@@ -121,7 +126,12 @@ client.on(Events.MessageCreate, async (message) => {
   if (clock == 0) {
     //chose random gif from gifs
     const randomIndex = Math.floor(Math.random() * gifsData.general.length);
-    await message.reply(gifsData.general[randomIndex]);
+    try {
+      await message.reply(gifsData.general[randomIndex]);
+    } catch (e) {
+      //do nothing
+      return;
+    }
     clock = 3;
   } else {
     clock--;
