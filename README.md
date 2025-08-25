@@ -1,8 +1,6 @@
-# vinch
+# vinchan
 
-this is a node.js project. run `npm install` to run the bot yourself.
-
-a simple discord bot that annoys your friends on configured events.
+a simple discord bot that annoys your friends on configured events. privately hosted on my rasberry pi. 
 
 may send random gifs, or play cringe songs in the most populated vc.
 
